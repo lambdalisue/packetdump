@@ -40,14 +40,12 @@ fn main() {
         })
         .collect();
     handles.push(thread::spawn(move || loop {
-        loop {
-            match rx.recv() {
-                Ok((iface, time, packet)) => match EthernetPacket::new(&packet) {
-                    Some(packet) => handle_ethernet_frame(&iface, &time, &packet),
-                    _ => continue,
-                },
-                Err(_) => continue,
-            }
+        match rx.recv() {
+            Ok((iface, time, packet)) => match EthernetPacket::new(&packet) {
+                Some(packet) => handle_ethernet_frame(&iface, &time, &packet),
+                _ => continue,
+            },
+            Err(_) => continue,
         }
     }));
 
